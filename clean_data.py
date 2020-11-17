@@ -10,14 +10,22 @@ import matplotlib.pyplot as plt
 
 
 def rm_ext_and_nan(CTG_features, extra_feature):
+
     """
 
     :param CTG_features: Pandas series of CTG features
     :param extra_feature: A feature to be removed
     :return: A dictionary of clean CTG called c_ctg
     """
+    c_ctg = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+    # import excel
+    CTG_features_nan = CTG_features.copy()
+    del CTG_features_nan[extra_feature]
 
+    for col in CTG_features_nan:
+        CTG_features_nan[col] = pd.to_numeric(CTG_features_nan[col], errors='coerce')
+        c_ctg[col]= CTG_features_nan[col].dropna()
     # --------------------------------------------------------------------------
     return c_ctg
 
