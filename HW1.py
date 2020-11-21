@@ -89,7 +89,7 @@ print('hello')
 # Your first task is: Implement the function `rm_ext_and_nan` in the module  `clean_data` so it will remove the extra feature `DR` (ignore the feature), and all non-numeric values (ignore the samples). Notice that removing nan should be performed for every feature. Do not remove an entire row. This function should return a dictionary of features where the values of each feature are the clean excel columns without the `DR` feature. **Hint**: In order to eliminate every cell that is non-numeric, you will have to transform it first to NaN and only then eliminate them. **Note**: `CTG_dataset` is a `pandas DataFrame` and every element within it is called `pandas series` (a table column). For our use, you can treat a dataframe as if it was a dictionary so that every key has a pandas series as value.\
 # **Bonus**:  Implement the function in a single line of code using dictionary comprehensions.
 
-# +from clean_data import rm_ext_and_nan as rm
+from clean_data import rm_ext_and_nan as rm
 extra_feature = 'DR'
 c_ctg = rm(CTG_features, extra_feature)
 # # -
@@ -113,6 +113,7 @@ plt.show()
 
 feat = 'Width'
 Q_clean = pd.DataFrame(c_ctg[feat])
+
 Q_clean.hist(bins=100)
 plt.xlabel('Histogram Width')
 plt.ylabel('Count')
@@ -121,7 +122,7 @@ plt.show()
 # Now that we are warmed up, let's do something a bit different. Instead of removing the NaN values, handle those missing values using random sampling of each series values. Use np.random.choice to specify each replacing-values' probability, so that the random sampling will be derived from the same distribution as the original valid series data. Again, first convert all non-numeric values to NaN and only then apply the sampling method. Implement the function `nan2num_samp`. ***Don't forget to remove `DR` again.***
 
 # +
-
+from clean_data import nan2num_samp
 extra_feature = 'DR'
 c_samp = nan2num_samp(CTG_features, extra_feature)
 # -

@@ -19,7 +19,6 @@ def rm_ext_and_nan(CTG_features, extra_feature):
     """
     c_ctg = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
-    # import excel
     CTG_features_nan = CTG_features.copy()
     del CTG_features_nan[extra_feature]
 
@@ -32,13 +31,33 @@ def rm_ext_and_nan(CTG_features, extra_feature):
 
 def nan2num_samp(CTG_features, extra_feature):
     """
-
     :param CTG_features: Pandas series of CTG features
     :param extra_feature: A feature to be removed
     :return: A pandas dataframe of the dictionary c_cdf containing the "clean" features
     """
     c_cdf = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+    del CTG_features[extra_feature]
+        #option A
+    # for col in CTG_features:
+    #     CTG_features[col] = pd.to_numeric(CTG_features[col], errors='coerce')
+    #     CTG_features[col] = CTG_features[col].fillna(pd.series(CTG_features[col]))
+    #     CTG_features[col] = np.random.choice(CTG_features[col], size=len(CTG_features[col].index))
+    #     c_cdf[col] = CTG_features[col]
+        #option B
+        # c_cdf[col] = CTG_features[col].fillna(pd.Series(np.random.choice(CTG_features[col], size= len(CTG_features[col].index))))
+    #option c
+    CTG_features_copy = CTG_features.copy()
+    for col in CTG_features:
+        pd.Series(CTG_features[col])
+        pd.Series(CTG_features_copy[col])
+        CTG_features[col] = pd.to_numeric(CTG_features[col], errors='coerce')
+        CTG_features_copy[col] = pd.to_numeric(CTG_features[col], errors='coerce')
+        CTG_features_copy[col] = CTG_features_copy[col].dropna()
+        CTG_features_copy[col] = np.random.choice(CTG_features_copy[col], size = len(CTG_features[col]))
+        CTG_features[col] = CTG_features[col].fillna(CTG_features_copy[col])
+        c_cdf[col] = CTG_features[col]
+
 
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_cdf)
