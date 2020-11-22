@@ -47,7 +47,7 @@
 # In order to do that, we will load the file into a variable called `CTG_features` and use descriptive statistics and visualization tools you have seen in the lectures.
 #
 
-# +
+
 import pandas as pd
 import pickle
 import clean_data
@@ -82,7 +82,6 @@ CTG_morph = CTG_dataset[['CLASS']]
 fetal_state = CTG_dataset[['NSP']]
 
 random.seed(10)  # fill your seed number here
-print('hello')
 # -
 
 # First  look at the data in your Excel file. You can see that in some of the cells we have '--' or NaN etc. Furthermore, the description tells us that the feature `DR` was removed although we did load it into our dataset.\

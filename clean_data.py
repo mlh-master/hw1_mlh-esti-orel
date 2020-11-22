@@ -38,25 +38,12 @@ def nan2num_samp(CTG_features, extra_feature):
     c_cdf = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
     del CTG_features[extra_feature]
-        #option A
-    # for col in CTG_features:
-    #     CTG_features[col] = pd.to_numeric(CTG_features[col], errors='coerce')
-    #     CTG_features[col] = CTG_features[col].fillna(pd.series(CTG_features[col]))
-    #     CTG_features[col] = np.random.choice(CTG_features[col], size=len(CTG_features[col].index))
-    #     c_cdf[col] = CTG_features[col]
-        #option B
-        # c_cdf[col] = CTG_features[col].fillna(pd.Series(np.random.choice(CTG_features[col], size= len(CTG_features[col].index))))
-    #option c
-    CTG_features_copy = CTG_features.copy()
+
     for col in CTG_features:
-        pd.Series(CTG_features[col])
-        pd.Series(CTG_features_copy[col])
-        CTG_features[col] = pd.to_numeric(CTG_features[col], errors='coerce')
-        CTG_features_copy[col] = pd.to_numeric(CTG_features[col], errors='coerce')
-        CTG_features_copy[col] = CTG_features_copy[col].dropna()
-        CTG_features_copy[col] = np.random.choice(CTG_features_copy[col], size = len(CTG_features[col]))
-        CTG_features[col] = CTG_features[col].fillna(CTG_features_copy[col])
-        c_cdf[col] = CTG_features[col]
+        a = pd.to_numeric(CTG_features[col], errors='coerce')
+        bank_for_col = a.dropna()
+        bank_for_col = np.random.choice(bank_for_col, size=len(a))
+        c_cdf[col] = a.fillna(pd.Series(bank_for_col))
 
 
     # -------------------------------------------------------------------------
@@ -69,9 +56,17 @@ def sum_stat(c_feat):
     :param c_feat: Output of nan2num_cdf
     :return: Summary statistics as a dicionary of dictionaries (called d_summary) as explained in the notebook
     """
-    # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+    d_summary ={}
 
-    # -------------------------------------------------------------------------
+    for col in c_feat.columns:
+        dic = {}
+       # dic['min','Q1','median','Q3','max']=c_feat[col].describe(include='min','Q1','median','Q3','max')
+        dic['min'] = c_feat[col].describe()['min']
+        dic['Q1'] = c_feat[col].describe()['25%']
+        dic['median'] = c_feat[col].describe()['50%']
+        dic['Q3'] = c_feat[col].describe()['75%']
+        dic['max'] = c_feat[col].describe()['max']
+        d_summary[col] = dic
     return d_summary
 
 
