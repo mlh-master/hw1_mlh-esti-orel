@@ -104,8 +104,10 @@ def phys_prior(c_cdf, feature, thresh):
     :return: An array of the "filtered" feature called filt_feature
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
-    filt_feature = df.groupby(c_cdf[feature])
-    filt_feature.filter(lambda x: len(x) > thresh)
+    cols = [feature]
+    filt_feature = c_cdf[c_cdf[cols] <= thresh][cols]
+    filt_feature = filt_feature.dropna()
+
     # -------------------------------------------------------------------------
     return filt_feature
 

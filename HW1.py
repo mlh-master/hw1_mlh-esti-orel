@@ -242,8 +242,8 @@ plt.show()
 # +
 from clean_data import phys_prior as phpr
 
-feature = 'LB' # change this feature
-thresh = 500 # FHR cannot be more then 500 bpm. Change this threshold accordingly to the feature
+feature = 'FM' # change this feature
+thresh = 1 #The fetal movement range is between 4-100 movements in an hour, if devided by 3600 seconds per hour, and taking the closest integers we will get a normal range between 0-1- so the threshold will be 1.
 filt_feature = phpr(c_samp, feature, thresh)
 # -
 
