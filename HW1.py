@@ -206,6 +206,7 @@ from clean_data import sum_stat as sst
 
 d_summary = sst(c_samp)
 print(d_summary['MSTV'])
+
 # -
 
 # Implement the function `rm_outlier` that will have the output of `sum_stat` as an input and will return a dictionary (similar to `c_ctg`) that will have outliers removed.

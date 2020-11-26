@@ -52,7 +52,6 @@ def nan2num_samp(CTG_features, extra_feature):
 
 def sum_stat(c_feat):
     """
-
     :param c_feat: Output of nan2num_cdf
     :return: Summary statistics as a dicionary of dictionaries (called d_summary) as explained in the notebook
     """
@@ -79,7 +78,19 @@ def rm_outlier(c_feat, d_summary):
     """
     c_no_outlier = {}
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
-
+    pd_c_feat = pd.DataFrame(c_feat)
+    for col_names, col_dictionary in d_summary.items():
+        q1 = col_dictionary['Q1']
+        q3 = col_dictionary['Q3']
+        step = 1.5 * (q3 - q1)
+        LF = q1 - step
+        UF = q3 + step
+        # for column in pd_c_feat[col_names]
+        values = pd_c_feat[col_names]
+        for index, value in enumerate(values, 1):
+            if value < LF or value > UF:
+                values[index] = np.nan
+        c_no_outlier[col_names] = values
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_no_outlier)
 
@@ -93,7 +104,8 @@ def phys_prior(c_cdf, feature, thresh):
     :return: An array of the "filtered" feature called filt_feature
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
-
+    filt_feature = df.groupby(c_cdf[feature])
+    filt_feature.filter(lambda x: len(x) > thresh)
     # -------------------------------------------------------------------------
     return filt_feature
 
