@@ -138,6 +138,7 @@ def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=
         plt.xlabel(x)
         plt.ylabel('Count')
         plt.show()
+        
         nsd_res[y].hist(bins=100)
         plt.xlabel(y)
         plt.ylabel('Count')

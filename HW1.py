@@ -266,11 +266,11 @@ orig_feat = CTG_features.columns.values
 # +
 # from clean_data import norm_standard as nsd
 #
-# selected_feat = ('LB','ASTV')
-# orig = nsd(CTG_features, selected_feat, flag=True)
-# nsd_std = nsd(CTG_features, selected_feat, mode='standard', flag=True)
-# nsd_norm = nsd(CTG_features, selected_feat, mode='MinMax', flag=True)
-# nsd_norm_mean = nsd(CTG_features, selected_feat, mode='mean', flag=True)
+selected_feat = ('LB','ASTV')
+orig = nsd(CTG_features, selected_feat, flag=True)
+nsd_std = nsd(CTG_features, selected_feat, mode='standard', flag=True)
+nsd_norm = nsd(CTG_features, selected_feat, mode='MinMax', flag=True)
+nsd_norm_mean = nsd(CTG_features, selected_feat, mode='mean', flag=True)
 # -
 
 # ### Questions:`
