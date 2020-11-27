@@ -19,7 +19,16 @@ def pred_log(logreg, X_train, y_train, X_test, flag=False):
     :return: A two elements tuple containing the predictions and the weightning matrix
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
-
+    # logreg.fit(X_train, y_train)
+    # w_log = logreg.coef_
+    # y_pred_log = logreg.predict_proba(X_test)
+    # y_pred_log += 1
+    X_train_nsd = nsd(X_train, ('LB', 'AC'), mode='standard')
+    X_test_nsd = nsd(X_test, ('LB', 'AC'), mode='standard')
+    w_log= logreg.fit(X_train_nsd, y_train)
+    y_pred_log = logreg.predict_proba(X_test_nsd)
+    y_pred_log += 1
+    w_log = logreg.coef_
     # -------------------------------------------------------------------------
     return y_pred_log, w_log
 

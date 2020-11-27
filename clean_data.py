@@ -123,6 +123,25 @@ def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=
     """
     x, y = selected_feat
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+    nsd_res = CTG_features.copy()
+    if mode == 'standard':
+        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].mean())/CTG_features[x].std())
+        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].mean()) / CTG_features[y].std())
+    if mode == 'MinMax':
+        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].min())/(CTG_features[x].max() - CTG_features[x].min()) )
+        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].min())/(CTG_features[y].max() - CTG_features[y].min()) )
+    if mode == 'mean':
+        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].mean())/(CTG_features[x].max() - CTG_features[x].min()) )
+        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].mean())/(CTG_features[y].max() - CTG_features[y].min()) )
+    if flag == True:
+        nsd_res[x].hist(bins=100)
+        plt.xlabel(x)
+        plt.ylabel('Count')
+        plt.show()
+        nsd_res[y].hist(bins=100)
+        plt.xlabel(y)
+        plt.ylabel('Count')
+        plt.show()
 
-    # -------------------------------------------------------------------------
+        # -------------------------------------------------------------------------
     return pd.DataFrame(nsd_res)

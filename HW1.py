@@ -264,16 +264,16 @@ orig_feat = CTG_features.columns.values
 # Implement the function `norm_standard` that will have four inputs: `data`, `selected_feat`, `mode` and `flag`. The function will return the **whole data** normalized/standardized by series according to *mode*, but you should also choose two features for visualized comparison (using histograms) between the original data and the different modes. Use `matplotlib` as you saw in your tutorials. The argument `flag` is used for visibility of histograms.  There are three types of `mode`: `'standard','MinMax' and 'mean'`. Look for their meanings in the second lecture, slides 46-47. The first call uses `mode=none` and `flag=False` (as defaults). Don't change this default. The only variable you are allowed to change in the next call is `selected_feat`.
 
 # +
-from clean_data import norm_standard as nsd
-
-selected_feat = ('LB','ASTV')
-orig = nsd(CTG_features, selected_feat, flag=True)
-nsd_std = nsd(CTG_features, selected_feat, mode='standard', flag=True)
-nsd_norm = nsd(CTG_features, selected_feat, mode='MinMax', flag=True)
-nsd_norm_mean = nsd(CTG_features, selected_feat, mode='mean', flag=True)
+# from clean_data import norm_standard as nsd
+#
+# selected_feat = ('LB','ASTV')
+# orig = nsd(CTG_features, selected_feat, flag=True)
+# nsd_std = nsd(CTG_features, selected_feat, mode='standard', flag=True)
+# nsd_norm = nsd(CTG_features, selected_feat, mode='MinMax', flag=True)
+# nsd_norm_mean = nsd(CTG_features, selected_feat, mode='mean', flag=True)
 # -
 
-# ### Questions:
+# ### Questions:`
 # **Q4:** Explain why normalization is not useful when there are outliers with extremely large or small values.
 
 # ### Answers:
