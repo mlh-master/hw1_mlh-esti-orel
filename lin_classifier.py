@@ -19,15 +19,10 @@ def pred_log(logreg, X_train, y_train, X_test, flag=False):
     :return: A two elements tuple containing the predictions and the weightning matrix
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
-    # logreg.fit(X_train, y_train)
-    # w_log = logreg.coef_
-    # y_pred_log = logreg.predict_proba(X_test)
-    # y_pred_log += 1
-    X_train_nsd = nsd(X_train, ('LB', 'AC'), mode='standard')
-    X_test_nsd = nsd(X_test, ('LB', 'AC'), mode='standard')
-    w_log= logreg.fit(X_train_nsd, y_train)
-    y_pred_log = logreg.predict_proba(X_test_nsd)
-    y_pred_log += 1
+
+    from clean_data import norm_standard as nsd
+    logreg.fit(X_train, y_train)
+    y_pred_log = logreg.predict(X_test)
     w_log = logreg.coef_
     # -------------------------------------------------------------------------
     return y_pred_log, w_log
@@ -107,7 +102,13 @@ def odds_ratio(w, X, selected_feat='LB'):
              odds_ratio: the odds ratio of the selected feature and label
     """
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
-
+    w_normal=w[0]
+    i = X.columns.get_loc(selected_feat)
+    odd_ratio = np.exp(w_normal[i])
+    w_T = np.transpose(w_normal)
+    # X_T = np.transpose(X)
+    odds_pre = 1 / (np.exp(-(X @ w_T)))
+    odds = odds_pre.median()
     # --------------------------------------------------------------------------
 
     return odds, odd_ratio
