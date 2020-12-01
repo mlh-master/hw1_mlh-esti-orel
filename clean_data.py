@@ -62,18 +62,29 @@ def nan2num_samp(CTG_features, extra_feature):
     # -------------------------------------------------------------------------
     return pd.DataFrame(c_cdf)
 
-
 def sum_stat(c_feat):
     """
 
     :param c_feat: Output of nan2num_cdf
     :return: Summary statistics as a dicionary of dictionaries (called d_summary) as explained in the notebook
     """
-    # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
+    d_summary ={}
 
-    # -------------------------------------------------------------------------
+    for col in c_feat.columns:
+        dic = {}
+       # dic['min','Q1','median','Q3','max']=c_feat[col].describe(include='min','Q1','median','Q3','max')
+        dic['min'] = c_feat[col].describe(include='min')
+        dic['Q1'] = c_feat[col].describe(include='Q1')
+        dic['median'] = c_feat[col].describe(include='Q2')
+        dic['Q3'] = c_feat[col].describe(include='Q3')
+        dic['max'] = c_feat[col].describe(include='max')
+
+       # dic['Q1'] = c_feat[col].quantile(0.25)
+        #dic['median'] = c_feat[col].memdian
+        #dic['Q3'] = c_feat[col].quantile(0.75)
+        #dic['max'] = c_feat[col].max
+        d_summary[col] = dic
     return d_summary
-
 
 def rm_outlier(c_feat, d_summary):
     """

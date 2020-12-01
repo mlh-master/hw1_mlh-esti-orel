@@ -45,9 +45,9 @@
 #
 # The CTG dataset is an Excel file which was sent to you. For more information, please look at the Excel sheet called Description or take a look at this [link](http://archive.ics.uci.edu/ml/datasets/Cardiotocography). Our main goal in this assignment is to train an algorithm to decide what is the fetal state according to the extracted features. Before we even start dealing with the data itself, we should apply the first and most important rule of data/signal processing: **ALWAYS LOOK AND UNDERSTAND THE DATA FIRST!**
 # In order to do that, we will load the file into a variable called `CTG_features` and use descriptive statistics and visualization tools you have seen in the lectures.
-#
 
-# +
+
+
 import pandas as pd
 import pickle
 import clean_data
