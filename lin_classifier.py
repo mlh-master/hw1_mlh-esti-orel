@@ -18,22 +18,13 @@ def pred_log(logreg, X_train, y_train, X_test, flag=False):
     :param flag: A boolean determining whether to return the predicted he probabilities of the classes (relevant after Q11)
     :return: A two elements tuple containing the predictions and the weightning matrix
     """
+    # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
-
-#X_train_nsd = nsd(X_train, ('LB', 'AC'), mode='standard')
- #   X_test_nsd = nsd(X_test, ('LB', 'AC'), mode='standard')
+    from clean_data import norm_standard as nsd
     logreg.fit(X_train, y_train)
     y_pred_log = logreg.predict(X_test)
-   # y_pred_log += 1
     w_log = logreg.coef_
-  #  w_log = pd.DataFrame(w_log, columns=X_train.columns)
-
-# y_pred_test_lin = lin_reg.predict(X_test)
-
-    # ---------------------------------------------------------------
-    #gt_array = [y_train, y_test]  # ground truth
-    #pred_array = [y_pred_train_lin, y_pred_test_lin]  # predictions
-    #plot_gt_vs_pred(gt_array, pred_array)
+    # -------------------------------------------------------------------------
     return y_pred_log, w_log
 
 
@@ -97,13 +88,7 @@ def cv_kfold(X, y, C, penalty, K, mode):
                 x_train, x_val = X.iloc[train_idx], X.iloc[val_idx]
         # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
-        x_train_fold, x_val_fold = X_train[train_idx, :], X_train[val_idx, :]
-        x_train_fold = (x_train_fold).fit
-        x_val_fold = (x_val_fold).fit
-        J_train_fold[h] = log_loss(y_train_fold, y_pred_train)
-        y_pred_val = log_reg.predict_proba(x_val_fold)
-        J_val_fold[h] = log_loss(y_val_fold, y_pred_val)
-
+        # --------------------------------------------------------------------------
     return validation_dict
 
 
@@ -116,11 +101,14 @@ def odds_ratio(w, X, selected_feat='LB'):
     :return: odds: median odds of all patients for the selected feature and label
              odds_ratio: the odds ratio of the selected feature and label
     """
-   i = X.columns.get_loc(selected_feat)
-   odds_ratio = np.exp(w[i])
-   w_T=np.transpose(w)
-   X_T=np.transpose(X)
-   odds_pre= 1/(np.exp(-(w_T@ X_T)))
-   odds=odds_pre.median
+    # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
+    w_normal=w[0]
+    i = X.columns.get_loc(selected_feat)
+    odd_ratio = np.exp(w_normal[i])
+    w_T = np.transpose(w_normal)
+    # X_T = np.transpose(X)
+    odds_pre = 1 / (np.exp(-(X @ w_T)))
+    odds = odds_pre.median()
+    # --------------------------------------------------------------------------
 
     return odds, odd_ratio

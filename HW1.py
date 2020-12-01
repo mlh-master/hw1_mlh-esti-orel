@@ -45,7 +45,7 @@
 #
 # The CTG dataset is an Excel file which was sent to you. For more information, please look at the Excel sheet called Description or take a look at this [link](http://archive.ics.uci.edu/ml/datasets/Cardiotocography). Our main goal in this assignment is to train an algorithm to decide what is the fetal state according to the extracted features. Before we even start dealing with the data itself, we should apply the first and most important rule of data/signal processing: **ALWAYS LOOK AND UNDERSTAND THE DATA FIRST!**
 # In order to do that, we will load the file into a variable called `CTG_features` and use descriptive statistics and visualization tools you have seen in the lectures.
-
+#
 
 
 import pandas as pd
@@ -82,7 +82,6 @@ CTG_morph = CTG_dataset[['CLASS']]
 fetal_state = CTG_dataset[['NSP']]
 
 random.seed(10)  # fill your seed number here
-print('hello')
 # -
 
 # First  look at the data in your Excel file. You can see that in some of the cells we have '--' or NaN etc. Furthermore, the description tells us that the feature `DR` was removed although we did load it into our dataset.\
@@ -207,6 +206,7 @@ from clean_data import sum_stat as sst
 
 d_summary = sst(c_samp)
 print(d_summary['MSTV'])
+
 # -
 
 # Implement the function `rm_outlier` that will have the output of `sum_stat` as an input and will return a dictionary (similar to `c_ctg`) that will have outliers removed.
@@ -242,8 +242,8 @@ plt.show()
 # +
 from clean_data import phys_prior as phpr
 
-feature = 'LB' # change this feature
-thresh = 500 # FHR cannot be more then 500 bpm. Change this threshold accordingly to the feature
+feature = 'FM' # change this feature
+thresh = 1 #The fetal movement range is between 4-100 movements in an hour, if devided by 3600 seconds per hour, and taking the closest integers we will get a normal range between 0-1- so the threshold will be 1.
 filt_feature = phpr(c_samp, feature, thresh)
 # -
 
@@ -264,8 +264,8 @@ orig_feat = CTG_features.columns.values
 # Implement the function `norm_standard` that will have four inputs: `data`, `selected_feat`, `mode` and `flag`. The function will return the **whole data** normalized/standardized by series according to *mode*, but you should also choose two features for visualized comparison (using histograms) between the original data and the different modes. Use `matplotlib` as you saw in your tutorials. The argument `flag` is used for visibility of histograms.  There are three types of `mode`: `'standard','MinMax' and 'mean'`. Look for their meanings in the second lecture, slides 46-47. The first call uses `mode=none` and `flag=False` (as defaults). Don't change this default. The only variable you are allowed to change in the next call is `selected_feat`.
 
 # +
-from clean_data import norm_standard as nsd
-
+# from clean_data import norm_standard as nsd
+#
 selected_feat = ('LB','ASTV')
 orig = nsd(CTG_features, selected_feat, flag=True)
 nsd_std = nsd(CTG_features, selected_feat, mode='standard', flag=True)
@@ -273,7 +273,7 @@ nsd_norm = nsd(CTG_features, selected_feat, mode='MinMax', flag=True)
 nsd_norm_mean = nsd(CTG_features, selected_feat, mode='mean', flag=True)
 # -
 
-# ### Questions:
+# ### Questions:`
 # **Q4:** Explain why normalization is not useful when there are outliers with extremely large or small values.
 
 # ### Answers:
@@ -356,76 +356,76 @@ print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pr
 
 # +
 selected_feat = 'LB'
+#
+odds, ratio = odds_ratio(w, X_train, selected_feat=selected_feat)  # you have to fill the right X first
+#
+print(f'The odds ratio of {selected_feat} for Normal is {ratio}')
+print(f"The odds to be labeled as 'Normal' is {odds}")
+# -
 
-# odds, ratio = odds_ratio(w, X_, selected_feat=selected_feat)  # you have to fill the right X first
-# #
-# print(f'The odds ratio of {selected_feat} for Normal is {ratio}')
-# print(f"The odds to be labeled as 'Normal' is {odds}")
-# # -
+### Question:
+# **Q6:** What is the meaning of your results? Explain the difference between odds_ratio and odds.
 #
-# # ### Question:
-# # **Q6:** What is the meaning of your results? Explain the difference between odds_ratio and odds.
+# ### Answers:
+# **Q6:**
+
+# Now let's see if normalization and standardization help us. Fill the next cell and print the three accuracies of the standardized and normalized training and testing data. *Important notes*:
 #
-# # ### Answers:
-# # **Q6:**
+# * Avoid information leakage! (from the test set to the train set)
+# * Do not apply the `norm_standard (nsd)` function on the labels.
+# * Set the `flag` argument to `False` when using `nsd` function.
+
+# Implement your code here:
+mode = 'MinMax'
+y_pred, w_norm_std = pred_log(logreg,nsd(X_train,selected_feat=('LB', 'ASTV'), mode = mode, flag=False), y_train, nsd(X_test,selected_feat=('LB', 'ASTV'), mode = mode, flag=False), flag=False) # complete this function using nsd function
+print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
+print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
+
+# You can choose now one of the training-testing dataset and stick to it. Let's visualize our learned parameters. Use your chosen weight matrix as an input to the function `w_no_p_table` in the next cell.
+
+input_mat = w_norm_std
+w_no_p_table(input_mat,orig_feat)
+
+# ### Questions:
+# **Q7:** Mention one advantage of using cross entropy as the cost function.
 #
-# # Now let's see if normalization and standardization help us. Fill the next cell and print the three accuracies of the standardized and normalized training and testing data. *Important notes*:
-# #
-# # * Avoid information leakage! (from the test set to the train set)
-# # * Do not apply the `norm_standard (nsd)` function on the labels.
-# # * Set the `flag` argument to `False` when using `nsd` function.
 #
-# # Implement your code here:
-# mode = # choose a mode from the `nsd`
-# y_pred, w_norm_std = pred_log(logreg,) # complete this function using nsd function
-# print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
-# print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
+# **Q8:** By selecting one feature at a time and compare their learned weights by looking at plots we had, what can you tell about the weights relations? Why does it happen? **Hint:** notice the sign of the weights and remember that an exponent is a monotonic function.
+
+# ### Answers:
+# **Q7:**
 #
-# # You can choose now one of the training-testing dataset and stick to it. Let's visualize our learned parameters. Use your chosen weight matrix as an input to the function `w_no_p_table` in the next cell.
+# **Q8:**
+
+# Ok, now let's recall that in the lecture you saw that accuracy is not always our best measure. Sensitivity and specificity can be much more informative and important mostly. The choice to train a model to have better results in sensitivity aspect rather than specificity or vice versa depends on our application.
+
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+ax = plt.subplot()
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax.set(ylabel='True labels', xlabel='Predicted labels')
+plt.show()
+
+### Questions:
+# **Q9:** What do you think is more important to us with this data? What is the clinical risk/cost for False Positive (FP) and False Negative (FN)?
+
+# ### Answers:
+# **Q9:**
+
+# So, now we will try to handle one of the main issues in learning which is called **overfitting** and one way to deal with it is called **regularization**.
 #
-# input_mat =  # Fill this argument
-# w_no_p_table(input_mat,orig_feat)
+# There are several types of regularizations and in this assignment we will experience two of them:
 #
-# # ### Questions:
-# # **Q7:** Mention one advantage of using cross entropy as the cost function.
-# #
-# #
-# # **Q8:** By selecting one feature at a time and compare their learned weights by looking at plots we had, what can you tell about the weights relations? Why does it happen? **Hint:** notice the sign of the weights and remember that an exponent is a monotonic function.
+# 1) Loss regularization.
 #
-# # ### Answers:
-# # **Q7:**
-# #
-# # **Q8:**
+# 2) Validation.
 #
-# # Ok, now let's recall that in the lecture you saw that accuracy is not always our best measure. Sensitivity and specificity can be much more informative and important mostly. The choice to train a model to have better results in sensitivity aspect rather than specificity or vice versa depends on our application.
+# The loss function is a function that takes the predicted values and the labels and *measures* how "close" they are to each other. Our demand is that this "distance" (metric) would be as low as possible. In addition to it, we can add more "demands" that can be represented mathematically. For example, we can demand that the number of coefficients won't get to large or we can try to restrict their values. A more physical example is a demand that our signal has to be smooth. When we try to minimize the new loss function we actually try to find the result which is the compromise of our demands. We can also "favor" one demand over another using **regularization parameters**.
 #
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
-# ax = plt.subplot()
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax.set(ylabel='True labels', xlabel='Predicted labels')
-# plt.show()
-#
-# # ### Questions:
-# # **Q9:** What do you think is more important to us with this data? What is the clinical risk/cost for False Positive (FP) and False Negative (FN)?
-#
-# # ### Answers:
-# # **Q9:**
-#
-# # So, now we will try to handle one of the main issues in learning which is called **overfitting** and one way to deal with it is called **regularization**.
-# #
-# # There are several types of regularizations and in this assignment we will experience two of them:
-# #
-# # 1) Loss regularization.
-# #
-# # 2) Validation.
-# #
-# # The loss function is a function that takes the predicted values and the labels and *measures* how "close" they are to each other. Our demand is that this "distance" (metric) would be as low as possible. In addition to it, we can add more "demands" that can be represented mathematically. For example, we can demand that the number of coefficients won't get to large or we can try to restrict their values. A more physical example is a demand that our signal has to be smooth. When we try to minimize the new loss function we actually try to find the result which is the compromise of our demands. We can also "favor" one demand over another using **regularization parameters**.
-# #
-# # You saw in the lecture "demands" on the learned weights and represented those demands mathematically using $ L_1 $ and $ L_2 $ norms. The regularization parameter was denoted as $\lambda$ (please notice that sometimes it is common to use the notation of $ c $ where $\lambda = c^{-1}$). Now it's your turn to become artists! Change and/or add arguments to *LogisticRegression* class in the next cell and perform learning using two regularizations: $ L_1 $ and $ L_2 $. Examine your results using the confusion matrix as we did before. Tune your regularization parameter until you get a result that you think is reasonable and that brings the sensitivity/specificity (depending on what you chose before) to the maximum.
-#
-# # +
-# # Implement your code here:
-# mode = # choose a mode from the `nsd`
+# You saw in the lecture "demands" on the learned weights and represented those demands mathematically using $ L_1 $ and $ L_2 $ norms. The regularization parameter was denoted as $\lambda$ (please notice that sometimes it is common to use the notation of $ c $ where $\lambda = c^{-1}$). Now it's your turn to become artists! Change and/or add arguments to *LogisticRegression* class in the next cell and perform learning using two regularizations: $ L_1 $ and $ L_2 $. Examine your results using the confusion matrix as we did before. Tune your regularization parameter until you get a result that you think is reasonable and that brings the sensitivity/specificity (depending on what you chose before) to the maximum.
+
+# +
+# Implement your code here:
+ mode = 'MinMax' # choose a mode from the `nsd`
 # logreg_l2 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L2
 # y_pred_2, w2 = pred_log(logreg_l2,) # complete this function using nsd function
 # cnf_matrix = metrics.confusion_matrix(y_test, y_pred_2)
