@@ -88,12 +88,12 @@ def cv_kfold(X, y, C, penalty, K, mode):
                 x_train, x_val = X.iloc[train_idx], X.iloc[val_idx]
         # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
-        x_train_fold, x_val_fold = x_train[train_idx], x_train[val_idx]
-        y_train_fold, y_val_fold =y_train[train_idx], y_train[val_idx]
-        y_pred_val, w= pred_log(logreg, y_train_fold,y_val_fold, flag=True)
-        J_val_fold[k] = log_loss(y_train_fold, y_pred_val)
+                x_train_fold, x_val_fold = x_train[train_idx], x_train[val_idx]
+                y_train_fold, y_val_fold = y_train[train_idx], y_train[val_idx]
+                y_pred_val, w= pred_log(logreg, y_train_fold,y_val_fold, flag=True)
+                J_val_fold[k] = log_loss(y_train_fold, y_pred_val)
 
-        k+=1
+                k+=1
 
         mu= J_val_fold.mean()
         sigma=J_val_fold.std()
