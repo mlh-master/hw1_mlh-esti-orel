@@ -425,27 +425,26 @@ plt.show()
 
 # +
 # Implement your code here:
- mode = 'MinMax' # choose a mode from the `nsd`
-# logreg_l2 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L2
-# y_pred_2, w2 = pred_log(logreg_l2,) # complete this function using nsd function
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred_2)
-# ax1 = plt.subplot(211)
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax1.set(ylabel='True labels', xlabel='Predicted labels')
-#
-# logreg_l1 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L1
-# y_pred_1, w1 = pred_log(logreg_l1,)  # complete this function using nsd function
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred_1)
-# ax2 = plt.subplot(212)
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax2.set(ylabel='True labels', xlabel='Predicted labels')
-# plt.show()
-# # -
-#
+mode = 'MinMax' # choose a mode from the `nsd`
+logreg_l2 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L2
+y_pred_2, w2 = pred_log(logreg_l2,nsd(X_train,mode = mode, flag=False), y_train, nsd(X_test,mode = mode, flag=False), flag=False) # complete this function using nsd function
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred_2)
+ax1 = plt.subplot(211)
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax1.set(ylabel='True labels', xlabel='Predicted labels')
+
+logreg_l1 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L1
+y_pred_1, w1 =pred_log(logreg_l1,nsd(X_train,mode = mode, flag=False), y_train, nsd(X_test, mode = mode, flag=False), flag=False) # complete this function using nsd function
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred_1)
+ax2 = plt.subplot(212)
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax2.set(ylabel='True labels', xlabel='Predicted labels')
+plt.show()
+
 # # Now that you are happy with your results, let's compare the coefficients of the two norms.\
 # # Choose two weighting matrices (one calculated using $ L_2 $ and the other calculated using $ L_1 $) and use them as inputs in `w_all_tbl` function. This function sorts the weights according to their $ L_2 $ norm (so the first argument has to be the matrix of $ L_2 $) and compares them to $L_1$.
 #
-# w_all_tbl(w2, w1, orig_feat)
+w_all_tbl(w2, w1, orig_feat)
 #
 # # Notice that the features are ordered differently because they are sorted according to $ L_2 $ values.
 #
@@ -466,12 +465,12 @@ plt.show()
 # #
 # # This function might take a while to perform depending on $ K $ and the number of regularization parameters you will choose.
 #
-# C =  # make a list of up to 6 different values of regularization parameters and examine their effects
-# K =  # choose a number of folds
-# mode =  # mode of nsd function
-# val_dict = cv_kfold(X_train, y_train, C=C, penalty=['l1', 'l2'], K=K,mode=mode)
-#
-# # Let's visualize your results:
+C =  [0.001,0.1,1,10,100,1000]# make a list of up to 6 different values of regularization parameters and examine their effects
+K =   10 # choose a number of folds
+mode = 'standard'# mode of nsd function
+val_dict = cv_kfold(X_train, y_train, C=C, penalty=['l1', 'l2'], K=K,mode=mode)
+
+# Let's visualize your results:
 #
 # import scipy.stats as stats
 # for d in val_dict:
