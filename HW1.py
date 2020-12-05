@@ -376,8 +376,8 @@ print(f"The odds to be labeled as 'Normal' is {odds}")
 # * Set the `flag` argument to `False` when using `nsd` function.
 
 # Implement your code here:
-mode = 'MinMax'
-y_pred, w_norm_std = pred_log(logreg,nsd(X_train,selected_feat=('LB', 'ASTV'), mode = mode, flag=False), y_train, nsd(X_test,selected_feat=('LB', 'ASTV'), mode = mode, flag=False), flag=False) # complete this function using nsd function
+mode = 'standard'
+y_pred, w_norm_std = pred_log(logreg,nsd(X_train, mode = mode), y_train, nsd(X_test, mode = mode), flag=False) # complete this function using nsd function
 print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
 print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
 
@@ -425,72 +425,73 @@ plt.show()
 
 # +
 # Implement your code here:
- mode = 'MinMax' # choose a mode from the `nsd`
-# logreg_l2 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L2
-# y_pred_2, w2 = pred_log(logreg_l2,) # complete this function using nsd function
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred_2)
-# ax1 = plt.subplot(211)
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax1.set(ylabel='True labels', xlabel='Predicted labels')
-#
-# logreg_l1 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000) # complete the arguments for L1
-# y_pred_1, w1 = pred_log(logreg_l1,)  # complete this function using nsd function
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred_1)
-# ax2 = plt.subplot(212)
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax2.set(ylabel='True labels', xlabel='Predicted labels')
-# plt.show()
+mode = 'standard' # choose a mode from the `nsd`
+logreg_l2 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000, penalty='l2',C=1) # complete the arguments for L2
+y_pred_2, w2 = pred_log(logreg_l2,nsd(X_train,mode = mode, flag=False), y_train, nsd(X_test,mode = mode), flag=False) # complete this function using nsd function
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred_2)
+ax1 = plt.subplot(211)
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax1.set(ylabel='True labels', xlabel='Predicted labels')
+
+logreg_l1 = LogisticRegression(solver='saga', multi_class='ovr', max_iter=10000, penalty='l1',C=1) # complete the arguments for L1
+y_pred_1, w1 =pred_log(logreg_l1,nsd(X_train,mode = mode), y_train, nsd(X_test, mode = mode), flag=False) # complete this function using nsd function
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred_1)
+ax2 = plt.subplot(212)
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax2.set(ylabel='True labels', xlabel='Predicted labels')
+plt.show()
 # # -
 #
 # # Now that you are happy with your results, let's compare the coefficients of the two norms.\
 # # Choose two weighting matrices (one calculated using $ L_2 $ and the other calculated using $ L_1 $) and use them as inputs in `w_all_tbl` function. This function sorts the weights according to their $ L_2 $ norm (so the first argument has to be the matrix of $ L_2 $) and compares them to $L_1$.
 #
-# w_all_tbl(w2, w1, orig_feat)
+w_all_tbl(w2, w1, orig_feat)
 #
-# # Notice that the features are ordered differently because they are sorted according to $ L_2 $ values.
+# Notice that the features are ordered differently because they are sorted according to $ L_2 $ values.
+
+### Questions:
+# **Q10:** What is the difference that you can see when plotting $ L_1 $ vs. $ L_2 $? Could you expect it ahead?
 #
-# # ### Questions:
-# # **Q10:** What is the difference that you can see when plotting $ L_1 $ vs. $ L_2 $? Could you expect it ahead?
-# #
-# # **Q11:** From the feature analysis, which of the features are most suggestive of fetuses at risk (pathology) versus normal? Elaborate on the meaning of these features in relation to the underlying physiology. You might want to have a look at the following [link](http://perinatology.com/Fetal%20Monitoring/Intrapartum%20Monitoring.htm).
+# **Q11:** From the feature analysis, which of the features are most suggestive of fetuses at risk (pathology) versus normal? Elaborate on the meaning of these features in relation to the underlying physiology. You might want to have a look at the following [link](http://perinatology.com/Fetal%20Monitoring/Intrapartum%20Monitoring.htm).
+
+# ### Answers:
+# **Q10:**
 #
-# # ### Answers:
-# # **Q10:**
-# #
-# #
-# # **Q11:**
 #
-# # Now we will use a method that help us choose what we call *hyperparameters* of the model. This is also a method of regularization and it is called **validation**. There are several types of validation and here we will use *stratified K-fold cross validation*. The hyperparameters that we would like to choose are the norms that we want to train with and the regularization parameter. Again, we use stratification for the folds to prevent biased learning.
-# #
-# # Implement the function `cv_kfold` in `lin_classifier` module. We will use `X_train` as our training set that will be iteratively divided into $ K-1 $ training sets and one validation set. **Notice:** choose wisely where to apply `norm_standard` function to avoid information leakage in every iteration. In this function you should build a list of dictionaries called `validation_dict` where each element in the list contains a dictionary with 4 keys name: `C, penalty, mu and sigma`. For every pair of parameters (`C and penalty`) you will run $ K $ validations and `mu and sigma` will be calculated as the average loss and standard deviation over $ K $ folds respectively. Use the function `log_loss` from `sklearn.metrics` that was already imported in `lin_classifier`. One more thing, you will have to implement a simple modification to `pred_log` function using the `flag` argument. When this flag is set to `True`, the function should return the probabilities of the classes and not the classes themselves. This is the output that `log_loss` function expects to get.
-# #
-# # This function might take a while to perform depending on $ K $ and the number of regularization parameters you will choose.
+# **Q11:**
+
+# Now we will use a method that help us choose what we call *hyperparameters* of the model. This is also a method of regularization and it is called **validation**. There are several types of validation and here we will use *stratified K-fold cross validation*. The hyperparameters that we would like to choose are the norms that we want to train with and the regularization parameter. Again, we use stratification for the folds to prevent biased learning.
 #
-# C =  # make a list of up to 6 different values of regularization parameters and examine their effects
-# K =  # choose a number of folds
-# mode =  # mode of nsd function
-# val_dict = cv_kfold(X_train, y_train, C=C, penalty=['l1', 'l2'], K=K,mode=mode)
+# Implement the function `cv_kfold` in `lin_classifier` module. We will use `X_train` as our training set that will be iteratively divided into $ K-1 $ training sets and one validation set. **Notice:** choose wisely where to apply `norm_standard` function to avoid information leakage in every iteration. In this function you should build a list of dictionaries called `validation_dict` where each element in the list contains a dictionary with 4 keys name: `C, penalty, mu and sigma`. For every pair of parameters (`C and penalty`) you will run $ K $ validations and `mu and sigma` will be calculated as the average loss and standard deviation over $ K $ folds respectively. Use the function `log_loss` from `sklearn.metrics` that was already imported in `lin_classifier`. One more thing, you will have to implement a simple modification to `pred_log` function using the `flag` argument. When this flag is set to `True`, the function should return the probabilities of the classes and not the classes themselves. This is the output that `log_loss` function expects to get.
 #
-# # Let's visualize your results:
+# This function might take a while to perform depending on $ K $ and the number of regularization parameters you will choose.
 #
-# import scipy.stats as stats
-# for d in val_dict:
-#     x = np.linspace(0, d['mu'] + 3 * d['sigma'], 1000)
-#     plt.plot(x,stats.norm.pdf(x, d['mu'], d['sigma']), label="p = " + d['penalty'] + ", C = " + str(d['C']))
-#     plt.title('Gaussian distribution of the loss')
-#     plt.xlabel('Average loss')
-#     plt.ylabel('Probabilty density')
-# plt.legend()
-# plt.show()
+C = [0.001,0.1,1,10,100,1000]# make a list of up to 6 different values of regularization parameters and examine their effects
+K = 10 # choose a number of folds
+mode = 'standard'# mode of nsd function
+val_dict = cv_kfold(X_train, y_train, C=C, penalty=['l1', 'l2'], K=K,mode=mode)
 #
-# # You can now choose parameters according to the results and train you model with the **full training set**.
-#
-# # +
-# C =  # complete this part according to your best result
+# Let's visualize your results:
+
+import scipy.stats as stats
+for d in val_dict:
+    x = np.linspace(0, d['mu'] + 3 * d['sigma'], 1000)
+    plt.plot(x,stats.norm.pdf(x, d['mu'], d['sigma']), label="p = " + d['penalty'] + ", C = " + str(d['C']))
+    plt.title('Gaussian distribution of the loss')
+    plt.xlabel('Average loss')
+    plt.ylabel('Probabilty density')
+plt.legend()
+plt.show()
+
+
+# You can now choose parameters according to the results and train you model with the **full training set**.
+
+# +
+# C = 10  # complete this part according to your best result
 # penalty =  # complete this part according to your best result
 # logreg = LogisticRegression(solver='saga', multi_class='ovr', penalty=penalty, C=C, max_iter=10000)
 # y_pred, w = pred_log(logreg,) # complete this function using nsd function
-#
+
 # cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
 # ax1 = plt.subplot(211)
 # sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])

@@ -114,7 +114,6 @@ def phys_prior(c_cdf, feature, thresh):
 
 def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=False):
     """
-
     :param CTG_features: Pandas series of CTG features
     :param selected_feat: A two elements tuple of strings of the features for comparison
     :param mode: A string determining the mode according to the notebook
@@ -125,24 +124,26 @@ def norm_standard(CTG_features, selected_feat=('LB', 'ASTV'), mode='none', flag=
     # ------------------ IMPLEMENT YOUR CODE HERE:------------------------------
     nsd_res = CTG_features.copy()
     if mode == 'standard':
-        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].mean())/CTG_features[x].std())
-        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].mean()) / CTG_features[y].std())
+        for col in nsd_res.columns:
+            nsd_res[col] = ((nsd_res[col]-nsd_res[col].mean())/nsd_res[col].std())
+
     if mode == 'MinMax':
-        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].min())/(CTG_features[x].max() - CTG_features[x].min()) )
-        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].min())/(CTG_features[y].max() - CTG_features[y].min()) )
+        for col in nsd_res.columns:
+            nsd_res[col] = ((nsd_res[col] -nsd_res[col].min())/(nsd_res[col].max()-nsd_res[col].min()))
+
     if mode == 'mean':
-        nsd_res[x] = nsd_res[x].apply(lambda a: (a - CTG_features[x].mean())/(CTG_features[x].max() - CTG_features[x].min()) )
-        nsd_res[y] = nsd_res[y].apply(lambda a: (a - CTG_features[y].mean())/(CTG_features[y].max() - CTG_features[y].min()) )
+        for col in nsd_res.columns:
+            nsd_res[col] = ((nsd_res[col]-nsd_res[col].mean())/nsd_res[col].max()-nsd_res[col].min())
+
     if flag == True:
         nsd_res[x].hist(bins=100)
         plt.xlabel(x)
         plt.ylabel('Count')
         plt.show()
-        
+
         nsd_res[y].hist(bins=100)
         plt.xlabel(y)
         plt.ylabel('Count')
         plt.show()
-
         # -------------------------------------------------------------------------
     return pd.DataFrame(nsd_res)

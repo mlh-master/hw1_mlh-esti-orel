@@ -21,9 +21,13 @@ def pred_log(logreg, X_train, y_train, X_test, flag=False):
     # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
 
     from clean_data import norm_standard as nsd
-    logreg.fit(X_train, y_train)
+    logreg = logreg.fit(X_train, y_train)
     y_pred_log = logreg.predict(X_test)
     w_log = logreg.coef_
+
+    if flag == True:
+        y_pred_log = logreg.predict_proba(X_test)
+
     # -------------------------------------------------------------------------
     return y_pred_log, w_log
 
@@ -87,6 +91,29 @@ def cv_kfold(X, y, C, penalty, K, mode):
             for train_idx, val_idx in kf.split(X, y):
                 x_train, x_val = X.iloc[train_idx], X.iloc[val_idx]
         # ------------------ IMPLEMENT YOUR CODE HERE:-----------------------------
+                y_train, y_val = y[train_idx], y[val_idx]
+                x_train = nsd(x_train, mode = mode)
+                x_val = nsd(x_val, mode = mode)
+                y_pred, w = pred_log(logreg, x_train, y_train, x_val, flag=True)
+                loss_val_vec[k] = log_loss(y_val, y_pred)
+                k += 1
+            mu = loss_val_vec.mean()
+            sigma = loss_val_vec.std()
+
+            validation_dict.append({'C': c, 'penalty': p, 'mu': mu, 'sigma': sigma})
+
+        #         x_train_fold, x_val_fold = x_train[train_idx], x_train[val_idx]
+        #         y_train_fold, y_val_fold = y_train[train_idx], y_train[val_idx]
+        #         y_pred_val, w = pred_log(logreg, y_train_fold, y_val_fold, flag=True)
+        #         J_val_fold[k] = log_loss(y_train_fold, y_pred_val)
+        #
+        #         k += 1
+        #
+        #     mu = J_val_fold.mean()
+        #     sigma = J_val_fold.std()
+        #     C = c
+        #     penalty = p
+        #     validation_dict = {'C', 'penalty', 'mu', 'sigma'}
 
         # --------------------------------------------------------------------------
     return validation_dict
