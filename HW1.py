@@ -487,52 +487,52 @@ plt.show()
 # You can now choose parameters according to the results and train you model with the **full training set**.
 
 # +
-# C = 10  # complete this part according to your best result
-# penalty =  # complete this part according to your best result
-# logreg = LogisticRegression(solver='saga', multi_class='ovr', penalty=penalty, C=C, max_iter=10000)
-# y_pred, w = pred_log(logreg,) # complete this function using nsd function
+C = 1000  # complete this part according to your best result
+penalty = 'l2'  # complete this part according to your best result
+logreg = LogisticRegression(solver='saga', multi_class='ovr', penalty=penalty, C=C, max_iter=10000)
+y_pred, w = pred_log(logreg,nsd(X_train,mode = 'standard'), y_train, nsd(X_test,mode = 'standard')) # complete this function using nsd function
 
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
-# ax1 = plt.subplot(211)
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
-# ax1.set(ylabel='True labels', xlabel='Predicted labels')
-# plt.show()
-# print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
-# print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
-# # -
-#
-# # Great job! So as you can see results did get better but not by that much but you got the feeling how to handle with data, what are the basics of learning and what are the real effects and applications of what you saw in the lectures. Now, one last thing: A possible reason for the poor improvements is that our data is probably not linearly separable and we used a linear classifier. There are two basic approaches for this kind of problem:
-# # The first one is to use non-linear classifier and the second one is to perform a transformation on our data so it will become linearly separable in another space. Here is an example of 2D data that can also visualize the problem and the second approach:
-#
-# # <img src="https://sthalles.github.io/assets/fisher-ld/feature_transformation.png" width=600 align="center">
-#
-# # As you can see, the features were non-linearly transformed simply by squaring each feature.
-#
-# # ### Questions:
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+ax1 = plt.subplot(211)
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal','Suspect','Pathology'], yticklabels=['Normal','Suspect','Pathology'])
+ax1.set(ylabel='True labels', xlabel='Predicted labels')
+plt.show()
+print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
+print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
+# -
+
+# Great job! So as you can see results did get better but not by that much but you got the feeling how to handle with data, what are the basics of learning and what are the real effects and applications of what you saw in the lectures. Now, one last thing: A possible reason for the poor improvements is that our data is probably not linearly separable and we used a linear classifier. There are two basic approaches for this kind of problem:
+# The first one is to use non-linear classifier and the second one is to perform a transformation on our data so it will become linearly separable in another space. Here is an example of 2D data that can also visualize the problem and the second approach:
+
+# <img src="https://sthalles.github.io/assets/fisher-ld/feature_transformation.png" width=600 align="center">
+
+# As you can see, the features were non-linearly transformed simply by squaring each feature.
+
+# ### Questions:
 # # **Q12:** Look at the given figure above. Why was it reasonable to expect that squaring each feature would make the data linearly separable?
-# #
-# # **Q13:** Suggest another non-linear transformation that would make the data linearly separable so that the line that separates the two data types will be perpendicular to one of the new axes. Write the new two features (axes) **explicitly** as a function of $ (x_1,x_2) $. Use LaTex to write mathematical operations.
 #
-# # ### Answers:
-# # **Q12:**
-# #
-# #
-# # **Q13:**
+# **Q13:** Suggest another non-linear transformation that would make the data linearly separable so that the line that separates the two data types will be perpendicular to one of the new axes. Write the new two features (axes) **explicitly** as a function of $ (x_1,x_2) $. Use LaTex to write mathematical operations.
+
+# ### Answers:
+# **Q12:**
 #
-# # Finally, just to get the feeling of better results when we go non-linear, let's try the random forest classifier. All you have to do is just choose one of the modes of the `nsd` function and see if you got better results:
 #
+# **Q13:**
+
+# Finally, just to get the feeling of better results when we go non-linear, let's try the random forest classifier. All you have to do is just choose one of the modes of the `nsd` function and see if you got better results:
+
 # from sklearn.ensemble import RandomForestClassifier as rfc
-# mode =  # choose your method
-# clf = rfc(n_estimators=10)
-# clf.fit(nsd(X_train, mode=mode), y_train)
-# y_pred = clf.predict(nsd(X_test, mode=mode))
-# cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
-# ax = plt.subplot()
-# sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal', 'Suspect', 'Pathology'],
-#             yticklabels=['Normal', 'Suspect', 'Pathology'])
-# ax.set(ylabel='True labels', xlabel='Predicted labels')
-# plt.show()
-# print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
-# print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
-#
-# # That's all folks!
+mode = 'standard' # choose your method
+clf = rfc(n_estimators=10)
+clf.fit(nsd(X_train, mode=mode), y_train)
+y_pred = clf.predict(nsd(X_test, mode=mode))
+cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
+ax = plt.subplot()
+sns.heatmap(cnf_matrix, annot=True, xticklabels=['Normal', 'Suspect', 'Pathology'],
+            yticklabels=['Normal', 'Suspect', 'Pathology'])
+ax.set(ylabel='True labels', xlabel='Predicted labels')
+plt.show()
+print("Accuracy is: " + str("{0:.2f}".format(100 * metrics.accuracy_score(y_test, y_pred))) + "%")
+print("F1 score is: " + str("{0:.2f}".format(100 * metrics.f1_score(y_test, y_pred, average='macro'))) + "%")
+
+# That's all folks!
