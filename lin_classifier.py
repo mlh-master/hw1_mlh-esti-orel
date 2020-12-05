@@ -99,10 +99,9 @@ def cv_kfold(X, y, C, penalty, K, mode):
                 k += 1
             mu = loss_val_vec.mean()
             sigma = loss_val_vec.std()
-
             validation_dict.append({'C': c, 'penalty': p, 'mu': mu, 'sigma': sigma})
-
-        return validation_dict
+        # --------------------------------------------------------------------------
+    return validation_dict
 
 
 def odds_ratio(w, X, selected_feat='LB'):
